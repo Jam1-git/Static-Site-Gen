@@ -1,6 +1,5 @@
 from enum import Enum
 from htmlnode import LeafNode
-import re
 
 class TextType(Enum):
     TEXT = "text"
@@ -38,33 +37,3 @@ def text_node_to_html_node(text_node):
              return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
         else:
              raise Exception(f"Invalid text type: {text_node.text_type}")
-        
-def split_nodes_delimiter(old_nodes, delimiter, text_type):
-    new_nodes = []
-    for node in old_nodes:
-        if node.text_type != TextType.TEXT:
-            new_nodes.append(node)
-            continue
-        splits = node.text.split(delimiter)
-        temp_nodes = []
-        i = 1
-        if len(splits) % 2 == 0:
-             raise Exception("invalid markdown syntax")
-        for split in splits:
-            if split != "":
-                if i % 2 == 1:
-                    temp_nodes.append(TextNode(split, TextType.TEXT))
-                else:
-                    temp_nodes.append(TextNode(split, text_type))   
-            i += 1
-        new_nodes.extend(temp_nodes)
-    return new_nodes
-
-def extract_markdown_images(text):
-     matches = re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)   
-     return matches
-
-def extract_markdown_links(text):
-     matches = re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)   
-     return matches
-     
